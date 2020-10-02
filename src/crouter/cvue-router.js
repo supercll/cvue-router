@@ -11,5 +11,14 @@ VueRouter.install = function(_Vue) {
     // 引用构造函数，VueRouter中使用
     Vue = _Vue;
 
+    // 1. 挂载$router
+    Vue.mixin({
+        beforeCreate() {
+            // 只有根组件有router选项
+            if (this.$options.router) {
+                Vue.prototype.$router = this.$options.router;
+            }
+        },
+    })
 
 }
