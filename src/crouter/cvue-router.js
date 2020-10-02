@@ -4,7 +4,8 @@ class VueRouter {
     constructor(options) {
         // 保存当前选项
         this.$options = options;
-        this.current = "/";
+        const initial = window.location.hash.slice(1) || "/";
+        Vue.util.defineReactive(this, "current", initial);
         window.addEventListener("hashchange", () => {
             console.log(this.current);
             this.current = window.location.hash.slice(1);
