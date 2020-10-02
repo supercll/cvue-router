@@ -2,7 +2,13 @@ let Vue; // 声明一个全局变量，存储构造函数，VueRouter中要用
 
 class VueRouter {
     constructor(options) {
+        // 保存当前选项
         this.$options = options;
+        this.current = "/";
+        window.addEventListener("hashchange", () => {
+            console.log(this.current);
+            this.current = window.location.hash.slice(1);
+        });
     }
 }
 
@@ -21,30 +27,44 @@ VueRouter.install = function(_Vue) {
             }
         },
     });
+
+    // 2.注册实现两个组件router-view,router-link
+    Vue.component("router-link", {
+        props: {
+            to: {
+                type: String,
+                required: true,
+            },
+        },
+        render(h) {
+            // <a href="to">xxx</a>
+            // return <a href={'#'+this.to}>{this.$slots.default}</a>
+            return h(
+                "a",
+                {
+                    attrs: {
+                        href: "#" + this.to,
+                    },
+                },
+                this.$slots.default
+            );
+        },
+    });
+    Vue.component("router-view", {
+        render(h) {
+            // 获取当前路由对应的组件
+            let component = null;
+            const route = this.$router.$options.routes.find(
+                route => route.path === this.$router.current
+            );
+            if (route) {
+                component = route.component;
+            }
+            console.log(this.$router.current, component);
+
+            return h(component);
+        },
+    });
 };
 
-// 2. 实现全局组件router-link
-vue.component("router-link", {
-    props: {
-        to: {
-            type: String,
-            required: true,
-        },
-    },
-    render(h) {
-        // 可以使用jsx，但是不推荐，因为性能低于render渲染成虚拟dom
-        return h(
-            "a",
-            {
-                attr: {
-                    href: "#" + this.to,
-                },
-            },
-            this.$slots.default
-        );
-    },
-});
-
-Vue.component("router-view", {
-})
 export default VueRouter;
