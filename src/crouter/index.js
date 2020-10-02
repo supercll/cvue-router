@@ -1,6 +1,5 @@
 import Vue from "vue";
-// import VueRouter from "./cvue-router";
-import VueRouter from "vue-router";
+import VueRouter from "./cvue-router";
 import Home from "../views/Home.vue";
 
 // 1.VueRouter是一个插件？
